@@ -1,293 +1,202 @@
 'use strict'
 
-const WALL = 'WALL'
-const FLOOR = 'FLOOR'
-const BALL = 'BALL'
-const GLUE = 'GLUE'
-const GAMER = 'GAMER'
+"use strict";
 
-const GAMER_IMG = '<img src="img/gamer.png">'
-const GLUED_GAMER_IMG = '<img src="img/gamer-purple.png">'
-const BALL_IMG = '<img src="img/ball.png">'
-const GLUE_IMG = '<img src="img/candy.png">'
+const BEGINNER = "Beginner";
+const MEDIUM = "Medium";
+const EXPERT = "Expert";
+let gBoard = [];
+let boardSize;
+let gAmountMines;
+const elBoard = document.querySelector(".board");
+let strHTML = "";
 
-const ADD_BALL_FREQ = 4000
-const ADD_GLUE_FREQ = 5000
-const REMOVE_GLUE_FREQ = 3000
+// We turn this flag into the cell that the user clicked when the user clicks on a cell for the first time
+let firstCellClicked = undefined;
+let mines = [];
 
+let minesPlaced = 0;
 
-// Model:
-var gBoard
-var gGamerPos
-var gIsGameOn
-var gIsGamerGlued
-var gScore
-var gBallsCount
-var gBallInterval
-var gGlueInterval
+// gBoard
+//  {minesAroundCount:4,
+//     isShown:false,
+// isMine:false,
+// isMarked:true
+//  }
+
+// let gGame{
+//     isOn:false,
+// shownCount:0,
+// markedCount:0,
+// secsPassed:0,
+// }
 
 function onInitGame() {
-    gGamerPos = { i: 2, j: 9 }
-    gIsGameOn = true
-    gIsGamerGlued = false
-    gScore = 0
-    gBallsCount = 2
-    gBoard = buildBoard()
-    renderBoard(gBoard)
-
-    gBallInterval = setInterval(addBall, ADD_BALL_FREQ)
-    gGlueInterval = setInterval(addGlue, ADD_GLUE_FREQ)
-    updateScore()
-    hideModal()
-
+    gAmountMines = 0;
+    createBoard(4);
+    initializeBoard();
 }
 
+function createBoard(size) {
+    gBoard = [];
+    boardSize = size;
+    mineUpdate(size);
+    initializeBoard();
+}
 
-function buildBoard() {
-    // Put FLOOR everywhere and WALL at edges
-    const rowCount = 10
-    const colCount = 12
-    const board = []
-    for (var i = 0; i < rowCount; i++) {
-        board[i] = []
-        for (var j = 0; j < colCount; j++) {
-            board[i][j] = { type: FLOOR, gameElement: null }
-            if (i === 0 || i === rowCount - 1 || j === 0 || j === colCount - 1) {
-                board[i][j].type = WALL
+function initializeBoard() {
+    for (let i = 0; i < boardSize; i++) {
+        gBoard[i] = [];
+        for (let j = 0; j < boardSize; j++) {
+            gBoard[i][j] = {
+                isMine: false,
+                revealed: false,
+                count: 0,
+            };
+        }
+    }
+    renderBoard();
+}
+
+function renderBoard() {
+    const elBoard = document.querySelector(".board");
+    let strHTML = "";
+    for (let i = 0; i < boardSize; i++) {
+        strHTML += "<tr>";
+        for (let j = 0; j < boardSize; j++) {
+            const cellClass = getCellClass(gBoard[i][j]);
+            const cellCount = getCellCount(i, j);
+
+            if (gBoard[i][j].isMine && gBoard[i][j].revealed) {
+                strHTML += `<td i="${i}" j="${j}" class="cell cell-${i}-${j} ${cellClass}" onclick="onCellClicked(${i}, ${j})">
+                <img src="mine.png"/>
+            </td>`;
+            } else if (gBoard[i][j].revealed && cellCount > 0) {
+                strHTML += `<td i="${i}" j="${j}" class="cell cell-${i}-${j} ${cellClass}" onclick="onCellClicked(${i}, ${j})">
+                <span>${cellCount}</span>
+            </td>`;
+            } else {
+                strHTML += `<td i="${i}" j="${j}" class="cell cell-${i}-${j} ${cellClass}" onclick="onCellClicked(${i}, ${j})">
+            </td>`;
+            }
+        }
+        strHTML += "</tr>";
+    }
+    elBoard.innerHTML = strHTML;
+}
+
+function getCellCount(i, j) {
+    let count = 0;
+    if (i - 1 >= 0 && gBoard[i - 1][j].isMine) {
+        count++;
+    }
+    if (i - 1 >= 0 && j - 1 >= 0 && gBoard[i - 1][j - 1].isMine) {
+        count++;
+    }
+    if (i - 1 >= 0 && j + 1 < boardSize && gBoard[i - 1][j + 1].isMine) {
+        count++;
+    }
+    if (j - 1 >= 0 && gBoard[i][j - 1].isMine) {
+        count++;
+    }
+    if (j + 1 < boardSize && gBoard[i][j + 1].isMine) {
+        count++;
+    }
+    if (i + 1 < boardSize && gBoard[i + 1][j].isMine) {
+        count++;
+    }
+    if (i + 1 < boardSize && j - 1 >= 0 && gBoard[i + 1][j - 1].isMine) {
+        count++;
+    }
+    if (i + 1 < boardSize && j + 1 < boardSize && gBoard[i + 1][j + 1].isMine) {
+        count++;
+    }
+    return count;
+}
+
+function getCellClass(cell) {
+    if (cell.isMine) {
+        return cell.revealed ? "cell-mine-revealed" : "cell-mine-hidden";
+    }
+    if (cell.revealed) {
+        return "cell-revealed";
+    }
+    return "cell-unrevealed";
+}
+
+function mineUpdate(size) {
+    switch (size) {
+        case 4:
+            gAmountMines = 2;
+            break;
+        case 8:
+            gAmountMines = 14;
+            break;
+        case 12:
+            gAmountMines = 32;
+            break;
+    }
+}
+
+function setMines() {
+    //מכניס מוקשים
+    const i = firstCellClicked[0];
+    const j = firstCellClicked[1];
+
+    while (minesPlaced < gAmountMines) {
+        const row = getRandomInt(0, boardSize - 1);
+        const col = getRandomInt(0, boardSize - 1);
+
+        if (row === i) {
+            if (col === j || col === j - 1 || col === j + 1) {
+                continue;
+            }
+        }
+        if (row === i - 1) {
+            if (col === j || col === j - 1 || col === j + 1) {
+                continue;
+            }
+        }
+        if (row === i + 1) {
+            if (col === j || col === j - 1 || col === j + 1) {
+                continue;
             }
         }
 
-
-    }
-
-    addPassages(board)
-    // Place the gamer and two balls
-    board[gGamerPos.i][gGamerPos.j].gameElement = GAMER
-    board[5][5].gameElement = BALL
-    board[7][2].gameElement = BALL
-console.table(board)
-    return board
-}
-
-function addPassages(board) {
-    const middleRows = Math.floor(board.length / 2)
-    const middleCols = Math.floor(board[0].length / 2)
-    board[0][middleCols].type = FLOOR
-    board[board.length - 1][middleCols].type = FLOOR
-    board[middleRows][0].type = FLOOR
-    board[middleRows][board[0].length - 1].type = FLOOR
-}
-
-// Render the board to an HTML table
-function renderBoard(board) {
-    var strHTML = ''
-    for (var i = 0; i < board.length; i++) {
-        strHTML += '<tr>'
-        for (var j = 0; j < board[0].length; j++) {
-            const currCell = board[i][j]
-            var cellClass = getClassName({ i, j }) + ' '
-            cellClass += (currCell.type === WALL) ? 'wall' : 'floor'
-            strHTML += `<td class="cell ${cellClass}" onclick="onMoveTo(${i},${j})" >`
-
-            if (currCell.gameElement === GAMER) {
-                strHTML += GAMER_IMG
-            } else if (currCell.gameElement === BALL) {
-                strHTML += BALL_IMG
-            }
-
-            strHTML += '</td>'
-        }
-        strHTML += '</tr>'
-    }
-    // console.log('strHTML', strHTML)
-
-    const elBoard = document.querySelector('.board')
-    elBoard.innerHTML = strHTML
-}
-
-// Move the player to a specific location
-function onMoveTo(i, j) {
-    if (!gIsGameOn) return
-    if (gIsGamerGlued) return
-
-    // Handling passages from onHandleKey
-    if (i === -1) i = gBoard.length - 1
-    else if (i === gBoard.length) i = 0
-    else if (j === -1) j = gBoard[0].length - 1
-    else if (j === gBoard[0].length) j = 0
-
-    // Calculate distance to make sure we are moving to a neighbor cell
-    const iAbsDiff = Math.abs(i - gGamerPos.i)
-    const jAbsDiff = Math.abs(j - gGamerPos.j)
-    // console.log('iAbsDiff:', iAbsDiff)
-    // console.log('jAbsDiff:', jAbsDiff)
-    // console.log(iAbsDiff, jAbsDiff)
-
-    if (iAbsDiff + jAbsDiff === 1 ||
-        iAbsDiff === gBoard.length - 1 ||
-        jAbsDiff === gBoard[0].length - 1) { // Handling passages from onclick
-
-        const targetCell = gBoard[i][j]
-        if (targetCell.type === WALL) return
-        // If the clicked Cell is one of the four allowed
-        if (targetCell.gameElement === BALL) handleBall()
-        else if (targetCell.gameElement === GLUE) handleGlue()
-
-        // Move the gamer - remove from prev pos
-        // update Model
-        gBoard[gGamerPos.i][gGamerPos.j].gameElement = null
-        // update DOM
-        renderCell(gGamerPos, '')
-
-        // Move to next pos
-        // update Model
-        targetCell.gameElement = GAMER
-        gGamerPos = { i, j }
-        // update DOM
-        const gamerImg = gIsGamerGlued ? GLUED_GAMER_IMG : GAMER_IMG
-        renderCell(gGamerPos, gamerImg)
-        // console.log('Moved!!')
-        renderCountGamerNegs()
-    }
-
-}
-
-function handleBall() {
-    // model
-    gScore++
-    gBallsCount--
-    // dom
-    updateScore()
-    playSound()
-    if (checkVictory()) gameOver()
-}
-
-function handleGlue() {
-    gIsGamerGlued = true
-    setTimeout(() => {
-        gIsGamerGlued = false
-        renderCell(gGamerPos, GAMER_IMG)
-    }, 3000)
-}
-
-function addBall() {
-    const emptyPos = getEmptyPos()
-    if (!emptyPos) return
-    gBoard[emptyPos.i][emptyPos.j].gameElement = BALL
-    renderCell(emptyPos, BALL_IMG)
-    gBallsCount++
-    renderCountGamerNegs()
-}
-
-function addGlue() {
-    const emptyPos = getEmptyPos()
-    if (!emptyPos) return
-
-    gBoard[emptyPos.i][emptyPos.j].gameElement = GLUE
-    renderCell(emptyPos, GLUE_IMG)
-    // setTimeout(removeGlue, REMOVE_GLUE_FREQ, emptyPos)
-    setTimeout(() => removeGlue(emptyPos), REMOVE_GLUE_FREQ)
-}
-
-function removeGlue(gluePos) {
-    const cell = gBoard[gluePos.i][gluePos.j]
-    if (cell.gameElement !== GLUE) return
-    gBoard[gluePos.i][gluePos.j].gameElement = null;
-    renderCell(gluePos, '');
-}
-
-function getEmptyPos() {
-    const emptyPoss = []
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard[0].length; j++) {
-            const currCell = gBoard[i][j]
-            if (currCell.type !== WALL && !currCell.gameElement) {
-                emptyPoss.push({ i, j })
-            }
+        if (!gBoard[row][col].isMine) {
+            gBoard[row][col].isMine = true;
+            minesPlaced++;
         }
     }
-
-    const randIdx = getRandomInt(0, emptyPoss.length)
-    return emptyPoss[randIdx]
 }
 
-function checkVictory() {
-    return gBallsCount === 0
-}
-
-function gameOver() {
-    gIsGameOn = false
-    clearInterval(gBallInterval)
-    clearInterval(gGlueInterval)
-    showModal()
-}
-
-function renderCountGamerNegs() {
-    var negsCount = 0;
-    for (var i = gGamerPos.i - 1; i <= gGamerPos.i + 1; i++) {
-        if (i < 0 || i >= gBoard.length) continue;
-        for (var j = gGamerPos.j - 1; j <= gGamerPos.j + 1; j++) {
-            if (j < 0 || j >= gBoard[i].length) continue;
-            if (i === gGamerPos.i && j === gGamerPos.j) continue;
-            const currCell = gBoard[i][j]
-            if (currCell.gameElement === BALL) negsCount++;
-        }
+function onCellClicked(i, j) {
+    gBoard[i][j].revealed = true;
+    if (!firstCellClicked) {
+        firstCellClicked = [i, j];
+        setMines();
     }
-    const elNgsCount = document.querySelector('.negs-count span')
-    elNgsCount.innerText = negsCount
+    renderBoard();
+    checkGameOver();
 }
 
-// Convert a location object {i, j} to a selector and render a value in that element
-function renderCell(location, value) {
-    const cellSelector = '.' + getClassName(location) // cell-i-j
-    const elCell = document.querySelector(cellSelector)
-    elCell.innerHTML = value
-}
-
-// Returns the class name for a specific cell
-function getClassName(location) {
-    const cellClass = 'cell-' + location.i + '-' + location.j
-    return cellClass
-}
-
-// Move the player by keyboard arrows
-function onHandleKey(event) {
-    const i = gGamerPos.i
-    const j = gGamerPos.j
-
-    switch (event.key) {
-        case 'ArrowLeft':
-            onMoveTo(i, j - 1)
-            break
-        case 'ArrowRight':
-            onMoveTo(i, j + 1)
-            break
-        case 'ArrowUp':
-            onMoveTo(i - 1, j)
-            break
-        case 'ArrowDown':
-            onMoveTo(i + 1, j)
-            break
+function checkGameOver() {
+    let win = false;
+    const cellsRevelead = document.querySelectorAll(".cell-revealed").length;
+    if (
+        !document.querySelector(".cell-mine-revealed") &&
+        cellsRevelead === boardSize * boardSize - gAmountMines
+    ) {
+        win = true;
+    } else if (document.querySelector(".cell-mine-revealed")) {
+        expandAllMines();
     }
 }
 
-function playSound() {
-    const sound = new Audio('sound/sound.mp4')
-    sound.play()
-}
-
-
-function showModal() {
-    const elModal = document.querySelector('.modal')
-    elModal.classList.remove('hide')
-}
-
-function hideModal() {
-    const elModal = document.querySelector('.modal')
-    elModal.classList.add('hide')
-}
-
-function updateScore() {
-    const elBallsCount = document.querySelector('.balls-count span')
-    elBallsCount.innerText = gScore
+function expandAllMines() {
+    document.querySelectorAll(".cell-mine-hidden").forEach((cell) => {
+        const i = +cell.getAttribute("i");
+        const j = +cell.getAttribute("j");
+        onCellClicked(i, j);
+    });
 }

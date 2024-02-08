@@ -18,3 +18,6 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min //The maximum is inclusive and the minimum is inclusive
 }
 
+function getClassName(location) {
+    return `cell-${location.i}-${location.j}`
+}

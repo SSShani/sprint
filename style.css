@@ -1,31 +1,82 @@
 body {
-    background-color: black;
+    background-color: rgb(229, 183, 183);
     color: white;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
 }
 
+.time {
+    font-size: 1.17em;
+}
+
+/* table {
+    background-color: #f7dab4;
+    margin: Auto;
+    padding: 10px;
+    border-radius: 10px;
+    border-spacing: 4px;
+} */
+
 table {
     margin: auto;
+    /* width: 100px;
+    height: 40px; */
+    background-color: rgb(207, 168, 168);
+}
+
+board {
+    width: 100px;
+    height: 100px;
 }
 
 .cell {
+    color: black;
     width: 40px;
     height: 40px;
+    margin: 20px;
+    text-align: center;
+    font-size: x-large;
+    transition: background-color 0.5s;
+    cursor: pointer;
 }
+
+.cell-unrevealed {
+    background-color: antiquewhite;
+}
+
+.cell-revealed {
+    background-color: white;
+}
+
+.cell-mine-hidden {
+    background-color: antiquewhite;
+}
+
+.cell-mine-revealed {
+    background-color: red;
+}
+
+/* .cell {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+} */
 
 .cell img {
     width: 25px;
     height: auto;
 }
+.hide {
+    display: none;
+}
 
-.floor {
+.restart-btn {
     background-color: gray;
 }
 
-.wall {
-    background-color: brown;
-}
+
+
+/* 
 
 .modal {
     background-color: black;
@@ -35,8 +86,15 @@ table {
     position: absolute;
     top: 300px;
     left: calc(50% - 175px);
+} 
+.floor {
+    background-color: gray;
 }
 
-.hide {
-    display: none;
+.wall {
+    background-color: brown;
 }
+
+
+*/
+
