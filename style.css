@@ -21,6 +21,8 @@ table {
     margin: auto;
     /* width: 100px;
     height: 40px; */
+    /* width: 100px;
+    height: 100px; */
     background-color: rgb(207, 168, 168);
 }
 
@@ -28,6 +30,17 @@ board {
     width: 100px;
     height: 100px;
 }
+
+.smiley img {
+    width: 32px; /* Adjust the width to your desired size */
+    height: 32px; /* Adjust the height to your desired size */
+}
+
+/* .smiley{
+    width: 10px;
+    height: 10px;
+    /* margin: 20px; */
+
 
 .cell {
     color: black;
@@ -91,4 +104,24 @@ board {
 
 .restart-btn {
     background-color: gray;
+}
+
+
+
+.board {
+    width: 80%; /* Adjust the width of the board */
+    margin: 0 auto; /* Center the board horizontally */
+}
+
+.cell {
+    width: 40px; /* Adjust the width of each cell */
+    height: 40px; /* Adjust the height of each cell */
+    padding: 5px; /* Add padding around each cell */
+    margin: 1px; /* Add margin between cells */
+    font-size: 20px; /* Adjust the font size of the numbers or icons */
+}
+
+.cell img {
+    width: 100%; /* Make sure images fill the cell */
+    height: 100%;
 }

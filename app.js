@@ -5,6 +5,9 @@ let boardSize;
 let gAmountMines;
 const elBoard = document.querySelector(".board");
 let strHTML = "";
+const NORMAL_EMOJI='<img src="img/normal.png">'
+const LOSE_EMOJI='<img src="img/los.png">'
+const WIN_EMOJI='<img src="img/win.png">'
 
 // We turn this flag into the cell that the user clicked when the user clicks on a cell for the first time
 let firstCellClicked = undefined;
@@ -15,7 +18,16 @@ function onInitGame() {
     gAmountMines = 0;
     createBoard(4);
    initializeBoard();
+//    smileyDefinition();
 }
+
+function smileyDefinition(){
+var clickableImage = document.getElementById('clickableImage');
+clickableImage.addEventListener('click', function() {
+    onInitGame()
+})
+}
+
 
 function onInitGame() {
     const elBoard = document.querySelector(".board");
@@ -55,11 +67,17 @@ function renderBoard() {
             const cellClass = getCellClass(gBoard[i][j]);
             const cellCount = getCellCount(i, j);
 
-            if (gBoard[i][j].isMine && gBoard[i][j].revealed) {
+            if (gBoard[i][j].isMine && gBoard[i][j].revealed) //I stepped on a mine
+            {
                 strHTML += `<td i="${i}" j="${j}" class="cell cell-${i}-${j} ${cellClass}" onclick="onCellClicked(${i}, ${j})">
-                <img src="mine.png"/>
+                <img src="img/mine.png"/>
             </td>`;
-            } else if (gBoard[i][j].revealed && cellCount > 0) {
+
+
+
+
+            } else if (gBoard[i][j].revealed && cellCount > 0)//with mined neighbors
+             {
                 strHTML += `<td i="${i}" j="${j}" class="cell cell-${i}-${j} ${cellClass}" onclick="onCellClicked(${i}, ${j})">
                 <span>${cellCount}</span>
             </td>`;
@@ -72,6 +90,13 @@ function renderBoard() {
     }
     elBoard.innerHTML = strHTML;
 }
+
+
+
+
+
+
+
 
 
 
@@ -174,7 +199,8 @@ function onCellClicked(i, j) {
     }
     
     gBoard[i][j].revealed = true;
-    if (!firstCellClicked) {
+    if (!firstCellClicked) //first Clicked
+    {
         firstCellClicked = [i, j];
         setMines();
     }
@@ -185,15 +211,23 @@ function onCellClicked(i, j) {
 function checkGameOver() {
     let win = false;
     const cellsRevelead = document.querySelectorAll(".cell-revealed").length;
-    if (
+    if //win
+    (
         !document.querySelector(".cell-mine-revealed") &&
         cellsRevelead === boardSize * boardSize - gAmountMines
     ) {
         win = true;
-    } else if (document.querySelector(".cell-mine-revealed")) {
+   // Change emoji to win emoji
+   document.getElementById('clickableImage').src = WIN_EMOJI;
+    } else//loss
+     if (document.querySelector(".cell-mine-revealed")) {
         expandAllMines();
+         // Change emoji to lose emoji
+         document.getElementById('clickableImage').src = LOSE_EMOJI;  
     }
+
 }
+
 
 function expandAllMines() {
     document.querySelectorAll(".cell-mine-hidden").forEach((cell) => {
@@ -201,4 +235,9 @@ function expandAllMines() {
         const j = +cell.getAttribute("j");
         onCellClicked(i, j);
     });
+}
+
+
+function restartGame() {
+    onInitGame();
 }
