@@ -99,8 +99,8 @@ function renderBoard() {
     elBoard.innerHTML = strHTML;
 }
 
-//Some neighbors are mines
-function getCellCount(i, j) {
+function getCellCount(i, j) //Some neighbors are mines
+{
     let count = 0;
     if (i - 1 >= 0 && gBoard[i - 1][j].isMine) {
         count++;
@@ -202,79 +202,9 @@ function onCellClicked(i, j) {
     checkGameOver();
 }
 
-// function openCellSiblings(i, j) {
-//     if (i - 1 >= 0 && !gBoard[i - 1][j].isMine && !gBoard[i - 1][j].revealed) {
-//         gBoard[i - 1][j].revealed = true;
-//     }
-//     if (
-//         i - 1 >= 0 &&
-//         j - 1 >= 0 &&
-//         !gBoard[i - 1][j - 1].isMine &&
-//         !gBoard[i - 1][j - 1].revealed
-//     ) {
-//         gBoard[i - 1][j - 1].revealed = true;
-//     }
-//     if (
-//         i - 1 >= 0 &&
-//         j + 1 < boardSize &&
-//         !gBoard[i - 1][j + 1].isMine &&
-//         !gBoard[i - 1][j + 1].revealed
-//     ) {
-//         gBoard[i - 1][j + 1].revealed = true;
-//     }
-//     if (j - 1 >= 0 && !gBoard[i][j - 1].isMine && !gBoard[i][j - 1].revealed) {
-//         gBoard[i][j - 1].revealed = true;
-//     }
-//     if (
-//         j + 1 < boardSize &&
-//         !gBoard[i][j + 1].isMine &&
-//         !gBoard[i][j + 1].revealed
-//     ) {
-//         gBoard[i][j + 1].revealed = true;
-//     }
-//     if (
-//         i + 1 < boardSize &&
-//         !gBoard[i + 1][j].isMine &&
-//         !gBoard[i + 1][j].revealed
-//     ) {
-//         gBoard[i + 1][j].revealed = true;
-//     }
-//     if (
-//         i + 1 < boardSize &&
-//         j - 1 >= 0 &&
-//         !gBoard[i + 1][j - 1].isMine &&
-//         !gBoard[i + 1][j - 1].revealed
-//     ) {
-//         gBoard[i + 1][j - 1].revealed = true;
-//     }
-//     if (
-//         i + 1 < boardSize &&
-//         j + 1 < boardSize &&
-//         !gBoard[i + 1][j + 1].isMine &&
-//         !gBoard[i + 1][j + 1].revealed
-//     ) {
-//         gBoard[i + 1][j + 1].revealed = true;
-//     }
-// }
-
-// function onCellRightClicked(i, j) {
-//     gBoard[i][j].flag = !gBoard[i][j].flag;
-//     if (gBoard[i][j].flag && !gBoard[i][j].revealed) {
-//         document.querySelector(
-//             `.cell-${i}-${j}`
-//         ).innerHTML = `<img src="img/flag.png"/>`;
-//         document.querySelector(`.cell-${i}-${j}`).classList.add("cell-flag");
-//     } else {
-//         document.querySelector(`.cell-${i}-${j}`).innerHTML = "";
-//         document.querySelector(`.cell-${i}-${j}`).classList.remove("cell-flag");
-//     }
-// }
-
-
 function openCellSiblings(i, j) {
     // Check if the clicked cell has no mines around it
     if (getCellCount(i, j) === 0) {
-        // Loop through all neighboring cells
         for (let di = -1; di <= 1; di++) {
             for (let dj = -1; dj <= 1; dj++) {
                 const ni = i + di;
@@ -293,7 +223,18 @@ function openCellSiblings(i, j) {
     }
 }
 
-
+function onCellRightClicked(i, j) {
+    gBoard[i][j].flag = !gBoard[i][j].flag;
+    if (gBoard[i][j].flag && !gBoard[i][j].revealed) {
+        document.querySelector(
+            `.cell-${i}-${j}`
+        ).innerHTML = `<img src="img/flag.png"/>`;
+        document.querySelector(`.cell-${i}-${j}`).classList.add("cell-flag");
+    } else {
+        document.querySelector(`.cell-${i}-${j}`).innerHTML = "";
+        document.querySelector(`.cell-${i}-${j}`).classList.remove("cell-flag");
+    }
+}
 
 function checkGameOver() {
     let win = false;
@@ -371,3 +312,59 @@ function pad(val) {
         return valString;
     }
 }
+
+
+// function openCellSiblings(i, j) {
+//     if (i - 1 >= 0 && !gBoard[i - 1][j].isMine && !gBoard[i - 1][j].revealed) {
+//         gBoard[i - 1][j].revealed = true;
+//     }
+//     if (
+//         i - 1 >= 0 &&
+//         j - 1 >= 0 &&
+//         !gBoard[i - 1][j - 1].isMine &&
+//         !gBoard[i - 1][j - 1].revealed
+//     ) {
+//         gBoard[i - 1][j - 1].revealed = true;
+//     }
+//     if (
+//         i - 1 >= 0 &&
+//         j + 1 < boardSize &&
+//         !gBoard[i - 1][j + 1].isMine &&
+//         !gBoard[i - 1][j + 1].revealed
+//     ) {
+//         gBoard[i - 1][j + 1].revealed = true;
+//     }
+//     if (j - 1 >= 0 && !gBoard[i][j - 1].isMine && !gBoard[i][j - 1].revealed) {
+//         gBoard[i][j - 1].revealed = true;
+//     }
+//     if (
+//         j + 1 < boardSize &&
+//         !gBoard[i][j + 1].isMine &&
+//         !gBoard[i][j + 1].revealed
+//     ) {
+//         gBoard[i][j + 1].revealed = true;
+//     }
+//     if (
+//         i + 1 < boardSize &&
+//         !gBoard[i + 1][j].isMine &&
+//         !gBoard[i + 1][j].revealed
+//     ) {
+//         gBoard[i + 1][j].revealed = true;
+//     }
+//     if (
+//         i + 1 < boardSize &&
+//         j - 1 >= 0 &&
+//         !gBoard[i + 1][j - 1].isMine &&
+//         !gBoard[i + 1][j - 1].revealed
+//     ) {
+//         gBoard[i + 1][j - 1].revealed = true;
+//     }
+//     if (
+//         i + 1 < boardSize &&
+//         j + 1 < boardSize &&
+//         !gBoard[i + 1][j + 1].isMine &&
+//         !gBoard[i + 1][j + 1].revealed
+//     ) {
+//         gBoard[i + 1][j + 1].revealed = true;
+//     }
+// }
