@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" href="#" />
+		<title>Minesweeper</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+
+	<body onload="onInitGame(4)">
+		<h1>Minesweeper Game</h1>
+
+		<div class="head">
+			<p class="levels"> 
+				<h3>Game level:</h3>
+				<button onclick="onInitGame(4)">Beginner</button>
+				<button onclick="onInitGame(8)">Medium</button>
+				<button onclick="onInitGame(12)">Expert</button>
+			</p>
+		
+			<div class="header">
+				<p class="life">
+					<img src="img/life.png" alt="life">
+					<span id="life-count"></span>
+				</p>
+				<p class="timer">
+					<span id="time">
+						Timer: <label id="minutes">00</label>:<label id="seconds">00</label>
+					</span>
+				</p>
+			</div>
+		</div>
+		
+		<p class="smiley">
+			<img id="clickableImage" src="img/normal.png" alt="Clickable Image" onclick="restartGame()">
+		</p>
+
+		<table>
+			<tbody class=board></tbody>
+		</table>
+		
+		<!-- <p class="smiley">
+		<img id="clickableImage" src="img/normal.png" alt="Clickable Image">
+	</p> -->
+
+
+		<!-- <button class="restart-btn" onclick="onInitGame()">Restart</button> --> 
+		
+
+		<script src="util.js"></script>
+		<script src="app.js"></script>
+	</body>
+</html>
+
+
+
+
+
+  
+ 
+
