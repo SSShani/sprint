@@ -1,23 +1,23 @@
-'use strict'
+"use strict";
 
 function createMat(ROWS, COLS) {
-    const mat = []
+    const mat = [];
     for (var i = 0; i < ROWS; i++) {
-        const row = []
+        const row = [];
         for (var j = 0; j < COLS; j++) {
-            row.push('')
+            row.push("");
         }
-        mat.push(row)
+        mat.push(row);
     }
-    return mat
+    return mat;
 }
 
 function getRandomInt(min, max) {
-    min = Math.ceil(min)
-    max = Math.floor(max)
-    return Math.floor(Math.random() * (max - min)) + min //The maximum is inclusive and the minimum is inclusive
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //The maximum is inclusive and the minimum is inclusive
 }
 
 function getClassName(location) {
-    return `cell-${location.i}-${location.j}`
+    return `cell-${location.i}-${location.j}`;
 }

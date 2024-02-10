@@ -8,33 +8,38 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 
-
-
-	<body onkeyup="onHandleKey(event)" onload="onInitGame()">
+	<body onload="onInitGame(4)">
 		<h1>Minesweeper Game</h1>
 
 		<div class="head">
 			<p class="levels"> 
 				<h3>Game level:</h3>
-				<button onclick="createBoard(4)">Beginner</button>
-				<button onclick="createBoard(8)">Medium</button>
-				<button onclick="createBoard(12)">Expert</button>
+				<button onclick="onInitGame(4)">Beginner</button>
+				<button onclick="onInitGame(8)">Medium</button>
+				<button onclick="onInitGame(12)">Expert</button>
 			</p>
 		
-			<p class="timer">
-				<h3>Timer:</h3>
-				<span class="time">00:000</span>
-			</p>
+			<div class="header">
+				<p class="life">
+					<img src="img/life.png" alt="life">
+					<span id="life-count"></span>
+				</p>
+				<p class="timer">
+					<span id="time">
+						Timer: <label id="minutes">00</label>:<label id="seconds">00</label>
+					</span>
+				</p>
+			</div>
 		</div>
 		
+		<p class="smiley">
+			<img id="clickableImage" src="img/normal.png" alt="Clickable Image" onclick="restartGame()">
+		</p>
+
 		<table>
 			<tbody class=board></tbody>
 		</table>
 		
-
-		<p class="smiley">
-			<img id="clickableImage" src="img/normal.png" alt="Clickable Image" onclick="restartGame()">
-		</p>
 		<!-- <p class="smiley">
 		<img id="clickableImage" src="img/normal.png" alt="Clickable Image">
 	</p> -->
