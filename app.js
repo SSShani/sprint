@@ -99,8 +99,8 @@ function renderBoard() {
     elBoard.innerHTML = strHTML;
 }
 
-function getCellCount(i, j) //Some neighbors are mines
-{
+//Some neighbors are mines
+function getCellCount(i, j) {
     let count = 0;
     if (i - 1 >= 0 && gBoard[i - 1][j].isMine) {
         count++;
@@ -154,7 +154,6 @@ function mineUpdate(size) {
 }
 
 function setMines() {
-    //מכניס מוקשים
     const i = firstCellClicked[0];
     const j = firstCellClicked[1];
 
@@ -192,7 +191,6 @@ function onCellClicked(i, j) {
         document.getElementById("life-count").innerText = lifeCount;
     }
     if (!firstCellClicked) {
-        //first Clicked
         firstCellClicked = [i, j];
         setMines();
         timer = setInterval(setTime, 1000);
@@ -268,7 +266,8 @@ function checkGameOver() {
     }
 }
 
-function disableBoard() {
+function disableBoard()//close button
+{
     document.querySelectorAll("button").forEach((btn) => {
         btn.setAttribute("disabled", "disabled");
     });
@@ -277,7 +276,8 @@ function disableBoard() {
     });
 }
 
-function enableBoard() {
+function enableBoard() //open button
+{
     document.querySelectorAll("button").forEach((btn) => {
         btn.removeAttribute("disabled");
     });
@@ -286,7 +286,8 @@ function enableBoard() {
     });
 }
 
-function expandAllMines() {
+function expandAllMines()//all Mines
+ {
     document.querySelectorAll(".cell-mine-hidden").forEach((cell) => {
         const i = +cell.getAttribute("i");
         const j = +cell.getAttribute("j");
@@ -312,59 +313,3 @@ function pad(val) {
         return valString;
     }
 }
-
-
-// function openCellSiblings(i, j) {
-//     if (i - 1 >= 0 && !gBoard[i - 1][j].isMine && !gBoard[i - 1][j].revealed) {
-//         gBoard[i - 1][j].revealed = true;
-//     }
-//     if (
-//         i - 1 >= 0 &&
-//         j - 1 >= 0 &&
-//         !gBoard[i - 1][j - 1].isMine &&
-//         !gBoard[i - 1][j - 1].revealed
-//     ) {
-//         gBoard[i - 1][j - 1].revealed = true;
-//     }
-//     if (
-//         i - 1 >= 0 &&
-//         j + 1 < boardSize &&
-//         !gBoard[i - 1][j + 1].isMine &&
-//         !gBoard[i - 1][j + 1].revealed
-//     ) {
-//         gBoard[i - 1][j + 1].revealed = true;
-//     }
-//     if (j - 1 >= 0 && !gBoard[i][j - 1].isMine && !gBoard[i][j - 1].revealed) {
-//         gBoard[i][j - 1].revealed = true;
-//     }
-//     if (
-//         j + 1 < boardSize &&
-//         !gBoard[i][j + 1].isMine &&
-//         !gBoard[i][j + 1].revealed
-//     ) {
-//         gBoard[i][j + 1].revealed = true;
-//     }
-//     if (
-//         i + 1 < boardSize &&
-//         !gBoard[i + 1][j].isMine &&
-//         !gBoard[i + 1][j].revealed
-//     ) {
-//         gBoard[i + 1][j].revealed = true;
-//     }
-//     if (
-//         i + 1 < boardSize &&
-//         j - 1 >= 0 &&
-//         !gBoard[i + 1][j - 1].isMine &&
-//         !gBoard[i + 1][j - 1].revealed
-//     ) {
-//         gBoard[i + 1][j - 1].revealed = true;
-//     }
-//     if (
-//         i + 1 < boardSize &&
-//         j + 1 < boardSize &&
-//         !gBoard[i + 1][j + 1].isMine &&
-//         !gBoard[i + 1][j + 1].revealed
-//     ) {
-//         gBoard[i + 1][j + 1].revealed = true;
-//     }
-// }

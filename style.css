@@ -1,5 +1,6 @@
 body {
-    background-color: rgb(229, 183, 183);
+    /* background-color: rgb(225, 168, 168); */
+    background-color:  rgb(207, 168, 168);
     color: white;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
@@ -36,15 +37,16 @@ board {
 }
 
 .cell-unrevealed {
-    background-color: antiquewhite;
+    /* background-color: antiquewhite; */
+    background-color:rgb(184, 139, 139)
 }
 
 .cell-revealed {
-    background-color: white;
+    background-color: antiquewhite;;
 }
 
 .cell-mine-hidden {
-    background-color: antiquewhite;
+    background-color: rgb(184, 139, 139);
 }
 
 .cell-mine-revealed {
